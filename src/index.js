@@ -1,12 +1,35 @@
 import ReactDOM from 'react-dom';
-import Pricing from './component/board/board.js'
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import routes from './routes';
+import {UserProvider} from './component/userContext/userContext';
+
+const showMenuContent = (routes) => {
+    var result = null;
+    if (routes.length > 0)
+    {
+        result = routes.map((route, index) => {
+            return (
+                <Route
+                key = {index}
+                path = {route.path}
+                exact = {route.exact}
+                component = {route.main} />
+            );
+        })
+    }
+
+    return result;
+}
 
 function App() {
     return (
-        <div>
-            <Pricing />
-        </div>
+        <Router>
+            <Switch>
+                {showMenuContent(routes) }
+            </Switch>
+        </Router>
     );
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+
+ReactDOM.render(<UserProvider> <App /> </UserProvider> , document.getElementById("root"));
