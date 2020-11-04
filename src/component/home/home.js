@@ -149,13 +149,13 @@ function HandleOpenCloseNewBoardDialog(boards, setBoard) {
 
 export default function Home() {
 
-//     const history = useHistory();
+    const history = useHistory();
 
-//         const isAuth = localStorage.getItem("isAuth");
-//         console.log(isAuth);
-//         if (isAuth === null || isAuth === "false") {
-//             history.push("/login");
-//         }
+        const isAuth = localStorage.getItem("isAuth");
+        console.log(isAuth);
+        if (isAuth === null || isAuth === "false") {
+            history.push("/login");
+        }
 
     const classes = useStyles();
 
