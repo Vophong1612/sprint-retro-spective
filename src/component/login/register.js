@@ -47,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
+axios.defaults.withCredentials = true;
+
 export default function Login() {
     const classes = useStyles();
     const history = useHistory();
