@@ -151,13 +151,11 @@ export default function Home() {
 
     const history = useHistory();
 
-    useEffect(() => {
         const isAuth = localStorage.getItem("isAuth");
         console.log(isAuth);
         if (isAuth === null || isAuth === "false") {
             return history.push("/login");
         }
-    }, [history]);
 
     const classes = useStyles();
 
