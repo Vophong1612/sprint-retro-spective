@@ -12,6 +12,7 @@ import config from '../../config/config.json'
 import './board.scss';
 import { useHistory } from 'react-router-dom';
 
+axios.defaults.withCredentials = true;
 
 function Board() {
 
