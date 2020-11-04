@@ -16,12 +16,12 @@ import { useHistory } from 'react-router-dom';
 
 function Board() {
 
-  const isAuth = localStorage.getItem("isAuth");
-  const history = useHistory();
-  console.log(isAuth);
-  if (isAuth === null || isAuth === "false") {
-      history.push("/login");
-  }
+//   const isAuth = localStorage.getItem("isAuth");
+//   const history = useHistory();
+//   console.log(isAuth);
+//   if (isAuth === null || isAuth === "false") {
+//       history.push("/login");
+//   }
 
   // console.log(window.location);
   const params = new URLSearchParams(window.location.search);
