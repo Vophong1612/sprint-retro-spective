@@ -20,7 +20,7 @@ function Board() {
   const history = useHistory();
   console.log(isAuth);
   if (isAuth === null || isAuth === "false") {
-      history.push("/login");
+      return history.push("/login");
   }
 
   // console.log(window.location);
