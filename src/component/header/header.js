@@ -16,6 +16,8 @@ import LockIcon from '@material-ui/icons/Lock';
 import { useHistory } from 'react-router-dom';
 import config from '../../config/config.json';
 
+axios.defaults.withCredentials = true;
+
 const useStyles = makeStyles((theme) => ({
   '@global': {
     ul: {
