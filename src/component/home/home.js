@@ -154,7 +154,7 @@ export default function Home() {
         const isAuth = localStorage.getItem("isAuth");
         console.log(isAuth);
         if (isAuth === null || isAuth === "false") {
-            return history.push("/login");
+            history.push("/login");
         }
 
     const classes = useStyles();
