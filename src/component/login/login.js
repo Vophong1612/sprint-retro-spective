@@ -53,11 +53,11 @@ axios.defaults.withCredentials = true;
 export default function Login() {
     const history = useHistory();
 
-//         const isAuth = localStorage.getItem("isAuth");
-//         console.log(isAuth);
-//         if (isAuth === "true") {
-//             history.push("/");
-//         }
+        const isAuth = localStorage.getItem("isAuth");
+        console.log(isAuth);
+        if (isAuth === "true") {
+            history.push("/");
+        }
 
     const classes = useStyles();
     const [values, setValues] = React.useState({
