@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 
 function HandleOpenCloseNewBoardDialog(boards, setBoard) {
     const [open, setOpen] = useState(false);
