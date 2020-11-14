@@ -1,36 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import moment from 'moment';
-import EditIcon from '@material-ui/icons/Edit';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import config from '../../config/config.json'
-import './board.scss';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import moment from "moment";
+import EditIcon from "@material-ui/icons/Edit";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import config from "../../config/config.json";
+import "./board.scss";
+import { Redirect} from "react-router-dom";
 
 // axios.defaults.withCredentials = true;
 
 function Board() {
-
-  const isAuth = localStorage.getItem("isAuth");
-  const history = useHistory();
-  console.log(isAuth);
-  if (isAuth === null || isAuth === "false") {
-      history.push("/login");
-  }
+  const [redirect, setRedirect] = useState(false);
 
   // console.log(window.location);
   const params = new URLSearchParams(window.location.search);
   const board_id = Number(params.get("board_id"));
   // console.log(board_id);
-  const [tasks, setTask] = useState([])
+  const [tasks, setTask] = useState([]);
   const [curT, setCurT] = useState(null);
 
-  const onDragOver = ev => {
+  const onDragOver = (ev) => {
     ev.preventDefault();
   };
 
@@ -42,12 +36,12 @@ function Board() {
   const onDrop = (ev, cat) => {
     const id = Number(ev.dataTransfer.getData("id"));
     let curtasks = [...tasks];
-    curtasks.forEach(e => {
+    curtasks.forEach((e) => {
       if (e.id === id) {
         e.category = cat;
       }
-    })
-    if (cat !== 'trash') {
+    });
+    if (cat !== "trash") {
       let columnname = 1;
       if (cat === "toimprove") {
         columnname = 2;
@@ -56,74 +50,75 @@ function Board() {
       }
       const entity = {
         tagID: id,
-        columnname: columnname
-      }
-      axios.post(`${config.path}/task/update-column-task?board_id=${board_id}`, { update_task: entity })
-        .then(result => {
+        columnname: columnname,
+      };
+      axios
+        .post(`${config.path}/task/update-column-task?board_id=${board_id}`, {
+          update_task: entity,
+        })
+        .then((result) => {
           console.log(result);
           if (result.data.code === 0) {
-            setTask(
-              curtasks
-            );
+            setTask(curtasks);
           }
-        }).catch(error => {
+        })
+        .catch((error) => {
           console.log(error); // Xử lý lỗi
         });
-    }
-    else if (cat === "trash") {
-      axios.post(`${config.path}/task/delete-task?board_id=${board_id}`, { tagID: id })
-        .then(result => {
+    } else if (cat === "trash") {
+      axios
+        .post(`${config.path}/task/delete-task?board_id=${board_id}`, {
+          tagID: id,
+        })
+        .then((result) => {
           console.log(result);
           if (result.data.code === 0) {
-            setTask(
-              curtasks
-            );
+            setTask(curtasks);
           }
-        }).catch(error => {
+        })
+        .catch((error) => {
           console.log(error); // Xử lý lỗi
         });
     }
   };
 
-  const handleKeyPress = ev => {
-    if ((ev.key === "Enter") && (ev.target.value !== "")) {
+  const handleKeyPress = (ev) => {
+    if (ev.key === "Enter" && ev.target.value !== "") {
       const name = ev.target.value;
 
-      axios.get(`${config.path}/task/task-total`)
-        .then(result => {
-          const timeCreate = moment(new Date());
+      axios.get(`${config.path}/task/task-total`).then((result) => {
+        const timeCreate = moment(new Date());
 
-          const new_task = {
-            boardID: board_id,
-            content: name,
-            columnname: 1,
-            timeCreate: timeCreate.format("YYYY-MM-DDTHH:mm:ss"),
-            timeUpdate: null
-          };
-          axios.post(`${config.path}/task/new-task`, { new_task: new_task })
-            .then(result => {
-              console.log(result);
-              if (result.data.code === 0) {
-                setTask([
-                  ...tasks,
-                  { id: result.data.result.id, name: name, category: "wentwell" }
-                ]);
-              }
-              else {
-                alert("Something's wrong! Please retry!");
-              }
-            })
-            .catch(error => {
-              console.log(error); // Xử lý lỗi
-            });
-
-        })
+        const new_task = {
+          boardID: board_id,
+          content: name,
+          columnname: 1,
+          timeCreate: timeCreate.format("YYYY-MM-DDTHH:mm:ss"),
+          timeUpdate: null,
+        };
+        axios
+          .post(`${config.path}/task/new-task`, { new_task: new_task })
+          .then((result) => {
+            console.log(result);
+            if (result.data.code === 0) {
+              setTask([
+                ...tasks,
+                { id: result.data.result.id, name: name, category: "wentwell" },
+              ]);
+            } else {
+              alert("Something's wrong! Please retry!");
+            }
+          })
+          .catch((error) => {
+            console.log(error); // Xử lý lỗi
+          });
+      });
 
       ev.target.value = "";
     }
   };
 
-  const [taskName, setTaskName] = useState('');
+  const [taskName, setTaskName] = useState("");
   // const [dialog, setDialog] = useState(null);
   const [open, setOpen] = useState(false);
 
@@ -131,153 +126,212 @@ function Board() {
     setOpen(false);
   };
 
-
   const handleClickOpen = () => {
     setOpen(true);
   };
-
 
   const HandleEditTask = () => {
     const entity = {
       tagID: curT.id,
       content: taskName,
     };
-    axios.post(`${config.path}/task/update-content-task?board_id=${board_id}`, { update_task: entity })
-      .then(result => {
+    axios
+      .post(`${config.path}/task/update-content-task?board_id=${board_id}`, {
+        update_task: entity,
+      })
+      .then((result) => {
         console.log(result);
-        if (result.data.code === 0){
+        if (result.data.code === 0) {
           const task_temp = [...tasks];
-          task_temp.forEach(e => {
-            if (e.id === curT.id){
+          task_temp.forEach((e) => {
+            if (e.id === curT.id) {
               e.name = taskName;
             }
           });
           setTask(task_temp);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error); // Xử lý lỗi
-      })
-
+      });
   };
 
   let my_tasks = {
     wentwell: [],
     toimprove: [],
     actionitems: [],
-    trash: []
+    trash: [],
   };
 
-  tasks && tasks.forEach(t => {
-    my_tasks[t.category].push(
-      <div
-        className="item-container"
-        key={t.id}
-        draggable
-        onDragStart={e => onDragStart(e, t.id)}>
-        {t.name}
-        <Button className="edit-button" onClick={() => 
-          {
-            setCurT(t);
-            handleClickOpen();}
-          }>
-          <EditIcon /></Button>
-          <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title"
-          maxWidth="xs" fullWidth>
-          <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              type="text"
-              fullWidth
-              onChange={e => {
-                setTaskName(e.target.value);
-                // console.log(e.target.value, taskName);
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-          </Button>
-            <Button onClick={() => {
-              HandleEditTask();
-              handleClose();
-            }} color="primary">
-              OK
-        </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-    );
-  });
-
-  useEffect(() => axios.get(`${config.path}/task?board_id=${board_id}`)
-    .then(result => {
-      let row = [];
-      result.data.result.forEach(e => {
-        let cat = "wentwell";
-        if (e.columnname === 2) {
-          cat = "toimprove";
-        } else if (e.columnname === 3) {
-          cat = "actionitems";
+  const handleShareBoard = () => {
+    const entity = {
+      boardID: board_id,
+      status: "public",
+    };
+    axios
+      .post(`${config.path}/board/edit-board?board_id=${board_id}`, {
+        edit_board: entity,
+      })
+      .then((result) => {
+        console.log(result);
+        if (result.data.code === 0) {
+          // const task_temp = [...tasks];
+          // task_temp.forEach(e => {
+          //   if (e.id === curT.id){
+          //     e.name = taskName;
+          //   }
+          // });
+          // setTask(task_temp);
+          alert("Share success !");
         }
-        const task = {
-          id: e.tagID,
-          name: e.content,
-          category: cat
-        }
-        row.push(task);
+      })
+      .catch((error) => {
+        console.log(error); // Xử lý lỗi
       });
-      setTask(row);
-    }), [])
+  };
 
+  tasks &&
+    tasks.forEach((t) => {
+      my_tasks[t.category].push(
+        <div
+          className="item-container"
+          key={t.id}
+          draggable
+          onDragStart={(e) => onDragStart(e, t.id)}
+        >
+          {t.name}
+          <Button
+            className="edit-button"
+            onClick={() => {
+              setCurT(t);
+              handleClickOpen();
+            }}
+          >
+            <EditIcon />
+          </Button>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="form-dialog-title"
+            maxWidth="xs"
+            fullWidth
+          >
+            <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                type="text"
+                fullWidth
+                onChange={(e) => {
+                  setTaskName(e.target.value);
+                  // console.log(e.target.value, taskName);
+                }}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  HandleEditTask();
+                  handleClose();
+                }}
+                color="primary"
+              >
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+      );
+    });
+
+  useEffect(() => {
+    const isAuth = localStorage.getItem("isAuth");
+    // console.log(isAuth);
+    if (isAuth === null || isAuth === "false") {
+      setRedirect(<Redirect to="/login" />);
+    }
+
+    axios.get(`${config.path}/task?board_id=${board_id}`).then((result) => {
+      if (result.data.code === 0) {
+        let row = [];
+        result.data.result.forEach((e) => {
+          let cat = "wentwell";
+          if (e.columnname === 2) {
+            cat = "toimprove";
+          } else if (e.columnname === 3) {
+            cat = "actionitems";
+          }
+          const task = {
+            id: e.tagID,
+            name: e.content,
+            category: cat,
+          };
+          row.push(task);
+        });
+        setTask(row);
+      } else {
+        alert("You are not permission for access to this board !");
+        setRedirect(<Redirect to="/" />);
+      }
+    });
+  }, []);
 
   return (
-    <div>
-      <div id='background-image'></div>
-      <div class="container">
-        <div
-          className="drop-area"
-          onDragOver={e => onDragOver(e)}
-          onDrop={e => onDrop(e, "wentwell")}
-        >
-          <h1>Went well</h1>
-          {my_tasks.wentwell}
-        </div>
-        <div
-          className="drop-area"
-          onDragOver={e => onDragOver(e)}
-          onDrop={e => onDrop(e, "toimprove")}
-        >
-          <h1>To Improve</h1>
-          {my_tasks.toimprove}
-        </div>
-        <div
-          className="drop-area"
-          onDragOver={e => onDragOver(e)}
-          onDrop={e => onDrop(e, "actionitems")}
-        >
-          <h1>Action Items</h1>
-          {my_tasks.actionitems}
-        </div>
-      </div>
+    redirect || (
       <div>
-        <div
-          class="trash-drop"
-          onDrop={e => onDrop(e, "trash")}
-          onDragOver={e => onDragOver(e)}>
-          Drop here to remove
+        <div className="head-bar">
+          <button className="share-btn" onClick={handleShareBoard}>
+            {" "}
+            <i class="fa fa-share" aria-hidden="true"></i>{" "}
+          </button>
+        </div>
+        <div className="container">
+          <div
+            className="drop-area"
+            onDragOver={(e) => onDragOver(e)}
+            onDrop={(e) => onDrop(e, "wentwell")}
+          >
+            <h1>Went well</h1>
+            {my_tasks.wentwell}
           </div>
-        <input
-          onKeyPress={e => handleKeyPress(e)}
-          className="input"
-          type="text"
-          placeholder="Task Name"
-        />
+          <div
+            className="drop-area"
+            onDragOver={(e) => onDragOver(e)}
+            onDrop={(e) => onDrop(e, "toimprove")}
+          >
+            <h1>To Improve</h1>
+            {my_tasks.toimprove}
+          </div>
+          <div
+            className="drop-area"
+            onDragOver={(e) => onDragOver(e)}
+            onDrop={(e) => onDrop(e, "actionitems")}
+          >
+            <h1>Action Items</h1>
+            {my_tasks.actionitems}
+          </div>
+        </div>
+        <div>
+          <div
+            className="trash-drop"
+            onDrop={(e) => onDrop(e, "trash")}
+            onDragOver={(e) => onDragOver(e)}
+          >
+            Drop here to remove
+          </div>
+          <input
+            onKeyPress={(e) => handleKeyPress(e)}
+            className="input"
+            type="text"
+            placeholder="Task Name"
+          />
+        </div>
       </div>
-    </div>
+    )
   );
 }
 

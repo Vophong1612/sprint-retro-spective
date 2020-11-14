@@ -24,7 +24,6 @@ html {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 32px;
 }
 
 .drop-area {
@@ -93,4 +92,25 @@ input {
     position: absolute !important;
     right: 0;
     top: 0;
+}
+
+.head-bar {
+    min-height: 32px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
+
+.share-btn {
+    border-radius: 4px;
+    font-size: 13px;
+    height: 28px;
+    padding: 0 8px;
+    color: #fb6964;
+    background: rgba(0, 0, 0, 0.7);
+    margin-top: auto;
+}
+
+.share-btn:hover {
+    background: rgba(0, 0, 0, 1)
 }

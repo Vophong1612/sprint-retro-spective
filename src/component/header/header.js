@@ -13,7 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import LockIcon from '@material-ui/icons/Lock';
-import { useHistory } from 'react-router-dom';
+import { Router, Link, useHistory } from 'react-router-dom';
 import config from '../../config/config.json';
 
 // axios.defaults.withCredentials = true;
@@ -153,7 +153,7 @@ export default function Hearder(props) {
                 <ListItemIcon>
                   <LockIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText primary="Change password" />
+                  <Link to="/change-password"> <ListItemText primary="Change password" ></ListItemText></Link>
               </StyledMenuItem>
               <StyledMenuItem>
                 <ListItemIcon>

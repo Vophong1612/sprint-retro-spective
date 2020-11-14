@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import routes from './routes';
 import {UserProvider} from './component/userContext/userContext';
+import "./App.css"
 
 const showMenuContent = (routes) => {
     var result = null;
